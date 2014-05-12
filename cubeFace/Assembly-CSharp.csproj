@@ -47,7 +47,8 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\CubeController.cs" />
-     <None Include="Assets\NoCull.shader" />
+     <Compile Include="Assets\GameController.cs" />
+     <Compile Include="Assets\SwipeManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,9 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/NoCull.shader">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameController.cs">
     <Files>
-      <File FileName="Temp/Compiled-Normal-Diffuse.shader" Line="7" Column="16" />
-      <File FileName="Assets/NoCull.shader" Line="29" Column="1" />
+      <File FileName="Assets/CubeController.cs" Line="15" Column="3" />
+      <File FileName="Assets/GameController.cs" Line="6" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
