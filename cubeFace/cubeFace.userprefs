@@ -1,9 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SwipeManager.cs">
     <Files>
-      <File FileName="Assets/CubeController.cs" Line="15" Column="3" />
-      <File FileName="Assets/GameController.cs" Line="6" Column="35" />
+      <File FileName="Assets/GameController.cs" Line="34" Column="48" />
+      <File FileName="Assets/SwipeManager.cs" Line="10" Column="33" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

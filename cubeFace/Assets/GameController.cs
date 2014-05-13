@@ -28,9 +28,20 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (swipeManager.swipeDirection == Swipe.Up) {
-			// do something...
-			
+		Vector2 firstTap = SwipeManager.firstTapPos;
+		Vector2 liftTap = SwipeManager.lastPos;
+
+		if (SwipeManager.swipeDirection != Swipe.None) {
+			Debug.Log ("FirstTap: " + firstTap + "LiftTap: " + liftTap);
+		}
+		if (SwipeManager.swipeDirection == Swipe.Up) {
+			playerSwipedVertically (false, true);
+		} else if (SwipeManager.swipeDirection == Swipe.Down) {
+			playerSwipedVertically (true, true);
+		} else if (SwipeManager.swipeDirection == Swipe.Left) {
+			playerSwipedHorizontally (true);
+		} else if (SwipeManager.swipeDirection == Swipe.Right) {
+			playerSwipedHorizontally (false);
 		}
 	}
 }
