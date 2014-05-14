@@ -6,6 +6,7 @@ public class CubeController : MonoBehaviour {
 	enum Face : byte {Face1=0, Face2=1, Face3=2, Face4=3, Face5=4, Face6=5, FaceNone=6};
 
 	public GameObject[] faces;
+	private float[] _facePercent;
 
 	private Face _topFace;
 	private Face _oldTopFace;
@@ -15,8 +16,10 @@ public class CubeController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		_topFace = Face.Face1;
-		_oldTopFace = Face.FaceNone;
+		_oldTopFace = Face.Face1;
 		_targetRotation = transform.rotation;
+
+		_facePercent = new float[] { 1, 0, 0, 0, 0, 0 };
 	}
 
 	// VERTICAL ROTATION
@@ -92,11 +95,21 @@ public class CubeController : MonoBehaviour {
 	void updateFacePositions () {
 		for (int i=0; i<faces.Length;++i) {
 			GameObject obj = faces [i];
+			float objPerc = _facePercent [i];
 			if (i == (int)_topFace) {
-				obj.transform.position = Vector3.Slerp (obj.transform.position, new Vector3(0f,2.85f,0f), Time.deltaTime * 6f);
+				objPerc += Time.deltaTime;
+				if (objPerc > 1.0f) objPerc = 1;
+				obj.transform.localPosition = Vector3.Slerp (obj.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
+				//float step = 2 * Time.deltaTime;
+				//obj.transform.localPosition = Vector3.MoveTowards(obj.transform.localPosition, new Vector3(0f,0f,2.85f), step);
 			} else {
-				obj.transform.position = Vector3.Slerp (obj.transform.position, new Vector3(0f,0f,0f), Time.deltaTime * 6f);
+				objPerc -= Time.deltaTime;
+				if (objPerc < 0) objPerc = 0;
+				obj.transform.localPosition = Vector3.Slerp (obj.transform.localPosition, new Vector3(0f,0f,0f), 1.0f-objPerc);
+				//float step = 2 * Time.deltaTime;
+				//obj.transform.localPosition = Vector3.MoveTowards(obj.transform.localPosition, new Vector3(0f,0f,0f), step);
 			}
+			_facePercent [i] = objPerc;
 		}
 	}
 
