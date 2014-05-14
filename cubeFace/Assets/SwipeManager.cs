@@ -51,6 +51,8 @@ public class SwipeManager : MonoBehaviour {
 					Debug.Log ("Magnitude not great enough: " + currentSwipe.magnitude);
 
 					return;
+				} else {
+
 				}
 
 				currentSwipe.Normalize();
