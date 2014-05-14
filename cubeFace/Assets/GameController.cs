@@ -32,12 +32,15 @@ public class GameController : MonoBehaviour {
 		Vector2 liftTap = SwipeManager.lastPos;
 
 		if (SwipeManager.swipeDirection != Swipe.None) {
-			Debug.Log ("FirstTap: " + firstTap + "LiftTap: " + liftTap);
+			//Debug.Log ("FirstTap: " + firstTap + "LiftTap: " + liftTap);
+			//Debug.Log (SwipeManager.swipeHorizontalPercentage);
 		}
 		if (SwipeManager.swipeDirection == Swipe.Up) {
-			playerSwipedVertically (false, true);
+			bool leftSide = SwipeManager.swipeHorizontalPercentage <= 0.5f;
+			playerSwipedVertically (false, leftSide);
 		} else if (SwipeManager.swipeDirection == Swipe.Down) {
-			playerSwipedVertically (true, true);
+			bool leftSide = SwipeManager.swipeHorizontalPercentage <= 0.5f;
+			playerSwipedVertically (true, leftSide);
 		} else if (SwipeManager.swipeDirection == Swipe.Left) {
 			playerSwipedHorizontally (true);
 		} else if (SwipeManager.swipeDirection == Swipe.Right) {

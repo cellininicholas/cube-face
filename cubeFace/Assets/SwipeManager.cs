@@ -7,7 +7,8 @@ public enum Swipe { None, Up, Down, Left, Right };
 
 public class SwipeManager : MonoBehaviour {
 	
-	public float minSwipeLength = 100f;
+	public float minSwipeLength = 20f;
+	public float swipeMargin = 5f;
 	
 	Vector2 firstPressPos;
 	Vector2 secondPressPos;
@@ -17,6 +18,7 @@ public class SwipeManager : MonoBehaviour {
 
 	public static Vector2 firstTapPos;
 	public static Vector2 lastPos;
+	public static float swipeHorizontalPercentage;
 	
 	
 	void Update () {
@@ -36,6 +38,8 @@ public class SwipeManager : MonoBehaviour {
 			if (t.phase == TouchPhase.Ended) {
 				
 				secondPressPos = new Vector2(t.position.x, t.position.y);
+				swipeHorizontalPercentage = Mathf.Abs(( (secondPressPos.x + firstPressPos.x)/ 2 ) / Screen.width);
+
 				lastPos = new Vector2(secondPressPos.x, secondPressPos.y);
 
 				currentSwipe = new Vector3(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
@@ -44,24 +48,31 @@ public class SwipeManager : MonoBehaviour {
 				
 				if (currentSwipe.magnitude < minSwipeLength) {
 					swipeDirection = Swipe.None;
-					
+					Debug.Log ("Magnitude not great enough: " + currentSwipe.magnitude);
+
 					return;
 				}
 
 				currentSwipe.Normalize();
 
-				// Swipe up
-				if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
-					swipeDirection = Swipe.Up;
-					// Swipe down
-				} else if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
-					swipeDirection = Swipe.Down;
-					// Swipe left
-				} else if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
-					swipeDirection = Swipe.Left;
-					// Swipe right
-				} else if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
-					swipeDirection = Swipe.Right;
+				if (Mathf.Abs(currentSwipe.y) > Mathf.Abs(currentSwipe.x)) {
+					// VERTICAL DELTA TAKES PRECEDENCE
+					if (currentSwipe.y > 0 && currentSwipe.x > -swipeMargin && currentSwipe.x < swipeMargin) {
+						// Swipe up
+						swipeDirection = Swipe.Up;
+					} else if (currentSwipe.y < 0 && currentSwipe.x > -swipeMargin && currentSwipe.x < swipeMargin) {
+						// Swipe down
+						swipeDirection = Swipe.Down;
+					}
+				} else {
+					// HORIZONTAL DELTA TAKES PRECEDENCE
+					if (currentSwipe.x < 0 && currentSwipe.y > -swipeMargin && currentSwipe.y < swipeMargin) {
+						// Swipe left
+						swipeDirection = Swipe.Left;
+					} else if (currentSwipe.x > 0 && currentSwipe.y > -swipeMargin && currentSwipe.y < swipeMargin) {
+						// Swipe right
+						swipeDirection = Swipe.Right;
+					}
 				}
 			}
 			
@@ -71,10 +82,9 @@ public class SwipeManager : MonoBehaviour {
 			firstTapPos = Vector2.zero;
 			lastPos = Vector2.zero;
 
+			swipeHorizontalPercentage = -1;
 		}
-		
 	}
-	
 }
 
 

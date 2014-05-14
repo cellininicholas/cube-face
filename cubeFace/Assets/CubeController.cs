@@ -20,36 +20,38 @@ public class CubeController : MonoBehaviour {
 
 	// VERTICAL ROTATION
 	public void rotateTargetRotationUp (bool leftSide) {
-		Debug.Log ("RotateUp");
+		//Debug.Log ("RotateUp - Left: " + leftSide);
 		if (leftSide) {
-			//_targetRotation *= Quaternion.Euler (90,0,0);
-			_targetRotation = Quaternion.FromToRotation(Vector3.up, new Vector3(90,0,0));
+			_targetRotation = Quaternion.AngleAxis(90, Vector3.back) * _targetRotation;
 		} else {
-			//_targetRotation *= Quaternion.Euler (0,0,90);
-			_targetRotation = Quaternion.FromToRotation(Vector3.up, new Vector3(0,0,90));
+			_targetRotation = Quaternion.AngleAxis(90, Vector3.right) * _targetRotation;
 		}
+		printTargetRotation ();
 	}
 
 	public void rotateTargetRotationDown (bool leftSide) {
-		Debug.Log ("RotateDown");
+		//Debug.Log ("RotateDown - Left: " + leftSide);
 		if (leftSide) {
-			_targetRotation = Quaternion.FromToRotation(Vector3.up, new Vector3(-90,0,0));
-			//_targetRotation *= Quaternion.Euler (-90,0,0);
+			_targetRotation = Quaternion.AngleAxis(90, Vector3.forward) * _targetRotation;
 		} else {
-			_targetRotation = Quaternion.FromToRotation(Vector3.up, new Vector3(0,0,-90));
-			//_targetRotation *= Quaternion.Euler (0,0,-90);
+			_targetRotation = Quaternion.AngleAxis(90, Vector3.left) * _targetRotation;
 		}
+		printTargetRotation ();
 	}
 
 	// HORIZONTAL ROTATION
 	public void rotateTargetRotationLeft () {
-		_targetRotation = Quaternion.FromToRotation(Vector3.up, new Vector3(0,90,0));
-		//_targetRotation *= Quaternion.Euler (0,90,0);
+		//Debug.Log ("RotateLeft");
+		_targetRotation = Quaternion.AngleAxis(90, Vector3.up) * _targetRotation;
+
+		printTargetRotation ();
 	}
 
 	public void rotateTargetRotationRight () {
-		_targetRotation = Quaternion.FromToRotation(Vector3.up, new Vector3(0,-90,0));
-		_targetRotation *= Quaternion.Euler (0,-90,0);
+		//Debug.Log ("RotateRight");
+		_targetRotation = Quaternion.AngleAxis(90, Vector3.down) * _targetRotation;
+
+		printTargetRotation ();
 	}
 
 	// GSDFGFJSDIFHGID
@@ -60,6 +62,10 @@ public class CubeController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		SmoothLookAt (4.5f);
+		SmoothLookAt (6f);
+	}
+
+	void printTargetRotation () {
+		//Debug.Log ("Target Rotation: " + _targetRotation);
 	}
 }
