@@ -9,14 +9,12 @@ public class CubeController : MonoBehaviour {
 	private float[] _facePercent;
 
 	private Face _topFace;
-	private Face _oldTopFace;
 
 	private Quaternion _targetRotation;
 
 	// Use this for initialization
 	void Start () {
 		_topFace = Face.Face1;
-		_oldTopFace = Face.Face1;
 		_targetRotation = transform.rotation;
 
 		_facePercent = new float[] { 1, 0, 0, 0, 0, 0 };
@@ -64,30 +62,40 @@ public class CubeController : MonoBehaviour {
 		printTargetRotation ();
 	}
 
+	bool floatsWithinDist (float a, float b, float dist) {
+		if (Mathf.Abs (a-b) <= dist) {
+			return true;
+		}
+		return false;
+	}
 
 	void updateTopFace () {
-		_oldTopFace = _topFace;
-		if (_targetRotation.eulerAngles.z == 0) {
-			if (_targetRotation.eulerAngles.x == 0) {
+		float dist = 10.0f;
+		if (floatsWithinDist (_targetRotation.eulerAngles.z, 0.0f, dist)) {
+			if (floatsWithinDist (_targetRotation.eulerAngles.x, 0.0f, dist)) {
 				// FACE 1
 				_topFace = Face.Face1;
-			} else if (_targetRotation.eulerAngles.x == 90) {
+			} else if (floatsWithinDist (_targetRotation.eulerAngles.x, 90.0f, dist)) {
 				// FACE 3
 				_topFace = Face.Face3;
-			} else if (_targetRotation.eulerAngles.x == 270) {
+			} else if (floatsWithinDist (_targetRotation.eulerAngles.x, 270.0f, dist)) {
 				// FACE 4
 				_topFace = Face.Face4;
+			} else {
+				Debug.Log ("NO");
 			}
 		} else {
-			if (_targetRotation.eulerAngles.z == 270) {
+			if (floatsWithinDist (_targetRotation.eulerAngles.z, 270.0f, dist)) {
 				// FACE 2
 				_topFace = Face.Face2;
-			} else if (_targetRotation.eulerAngles.z == 90) {
+			} else if (floatsWithinDist (_targetRotation.eulerAngles.z, 90.0f, dist)) {
 				// FACE 5
 				_topFace = Face.Face5;
-			} else if (_targetRotation.eulerAngles.z == 180) {
+			} else if (floatsWithinDist (_targetRotation.eulerAngles.z, 180.0f, dist)) {
 				// FACE 6
 				_topFace = Face.Face6;
+			} else {
+				Debug.Log ("NO");
 			}
 		}
 	}
@@ -121,6 +129,6 @@ public class CubeController : MonoBehaviour {
 
 	void printTargetRotation () {
 		Debug.Log ("Top Face: " +_topFace);
-		//Debug.Log ("Target Rotation: " + _targetRotation.eulerAngles);
+		Debug.Log ("Target Rotation: " + _targetRotation.eulerAngles);
 	}
 }

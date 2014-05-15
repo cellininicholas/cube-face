@@ -28,8 +28,8 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Vector2 firstTap = SwipeManager.firstTapPos;
-		Vector2 liftTap = SwipeManager.lastPos;
+		//Vector2 firstTap = SwipeManager.firstTapPos;
+		//Vector2 liftTap = SwipeManager.lastPos;
 
 		if (SwipeManager.swipeDirection != Swipe.None) {
 			//Debug.Log ("FirstTap: " + firstTap + "LiftTap: " + liftTap);
