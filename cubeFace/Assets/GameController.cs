@@ -46,5 +46,20 @@ public class GameController : MonoBehaviour {
 		} else if (SwipeManager.swipeDirection == Swipe.Right) {
 			playerSwipedHorizontally (false);
 		}
+
+		// CHECK KEYBOARD
+		if (Input.GetKeyDown("w")) { 
+			playerSwipedVertically (false, true);
+		} else if (Input.GetKeyDown("s")) {
+			playerSwipedVertically (true, true);
+		} else if (Input.GetKeyDown("e")) {
+			playerSwipedVertically (false, false);
+		} else if (Input.GetKeyDown("d")) {
+			playerSwipedVertically (true, false);
+		} else if (Input.GetKeyDown("a")) {
+			playerSwipedHorizontally (true);
+		} else if (Input.GetKeyDown("f")) {
+			playerSwipedHorizontally (false);
+		}
 	}
 }
