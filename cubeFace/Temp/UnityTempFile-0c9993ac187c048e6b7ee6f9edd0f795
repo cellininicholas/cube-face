@@ -36,6 +36,8 @@
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_OSX
 'Assets/CubeController.cs'
+'Assets/CubeFaceController.cs'
+'Assets/FaceOptionsController.cs'
 'Assets/GameController.cs'
 'Assets/SwipeManager.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Frameworks/Mono/lib/mono/unity/System.Runtime.Serialization.dll'

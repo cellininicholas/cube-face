@@ -5,10 +5,13 @@ public class CubeController : MonoBehaviour {
 
 	enum Face : byte {Face1=0, Face2=1, Face3=2, Face4=3, Face5=4, Face6=5, FaceNone=6};
 
+	public GameObject[] faceSpaces;
 	public GameObject[] faces;
 	private float[] _facePercent;
-
 	private Face _topFace;
+
+	public GameObject faceOptionsPrefab;
+	private GameObject[] _faceOptions;
 
 	private Quaternion _targetRotation;
 
@@ -18,6 +21,16 @@ public class CubeController : MonoBehaviour {
 		_targetRotation = transform.rotation;
 
 		_facePercent = new float[] { 1, 0, 0, 0, 0, 0 };
+
+
+		_faceOptions = new GameObject[6];
+		// Instantiate FaceOptions Prefab
+		for (int y = 0; y < faceSpaces.Length; ++y) {
+			_faceOptions[y] = Instantiate(faceOptionsPrefab) as GameObject;
+			_faceOptions[y].transform.parent = faceSpaces[y].transform;
+			_faceOptions[y].transform.localPosition = Vector3.zero;
+			_faceOptions[y].transform.localRotation = Quaternion.AngleAxis(90, Vector3.left);
+		}
 	}
 
 	// VERTICAL ROTATION
@@ -103,20 +116,34 @@ public class CubeController : MonoBehaviour {
 	void updateFacePositions () {
 		for (int i=0; i<faces.Length;++i) {
 			GameObject obj = faces [i];
+			GameObject faceSpaceObj = _faceOptions[i];
 			float objPerc = _facePercent [i];
+
+			FaceOptionsController faceController = null;
+			if (faceSpaceObj != null) {
+				faceController = (FaceOptionsController) faceSpaceObj.GetComponent(typeof(FaceOptionsController));
+			}
+
 			if (i == (int)_topFace) {
-				objPerc += Time.deltaTime;
+				objPerc += Time.deltaTime * 0.8f;
 				if (objPerc > 1.0f) objPerc = 1;
 				obj.transform.localPosition = Vector3.Slerp (obj.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
-				//float step = 2 * Time.deltaTime;
-				//obj.transform.localPosition = Vector3.MoveTowards(obj.transform.localPosition, new Vector3(0f,0f,2.85f), step);
+				if (faceSpaceObj != null) {
+					faceSpaceObj.transform.localPosition = Vector3.Slerp (faceSpaceObj.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
+				}
+
 			} else {
-				objPerc -= Time.deltaTime;
+				objPerc -= Time.deltaTime * 0.8f;
 				if (objPerc < 0) objPerc = 0;
 				obj.transform.localPosition = Vector3.Slerp (obj.transform.localPosition, new Vector3(0f,0f,0f), 1.0f-objPerc);
-				//float step = 2 * Time.deltaTime;
-				//obj.transform.localPosition = Vector3.MoveTowards(obj.transform.localPosition, new Vector3(0f,0f,0f), step);
+				if (faceSpaceObj != null) {
+					faceSpaceObj.transform.localPosition = Vector3.Slerp (faceSpaceObj.transform.localPosition, new Vector3(0f,0f,0f), 1.0f-objPerc);
+				}
 			}
+			if (faceController != null) {
+				faceController.setAlpha(((faceSpaceObj.transform.localPosition.z / 2.85f) / 2));
+			}
+
 			_facePercent [i] = objPerc;
 		}
 	}
@@ -128,7 +155,7 @@ public class CubeController : MonoBehaviour {
 	}
 
 	void printTargetRotation () {
-		Debug.Log ("Top Face: " +_topFace);
-		Debug.Log ("Target Rotation: " + _targetRotation.eulerAngles);
+		//Debug.Log ("Top Face: " +_topFace);
+		//Debug.Log ("Target Rotation: " + _targetRotation.eulerAngles);
 	}
 }
