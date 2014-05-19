@@ -119,11 +119,10 @@ public class CubeController : MonoBehaviour {
 		}
 
 		int offset = _faceRotOffset[(int)_topFace] - (int)_targetRotation.eulerAngles.y;
-		if (offset < 0) offset += 360;
 
-		Debug.Log(" Target Rotation: " + (int)_targetRotation.eulerAngles.y);
+		//Debug.Log(" Target Rotation: " + (int)_targetRotation.eulerAngles.y);
 		//Debug.Log(" Face Rot Offset: " + (int)_faceRotOffset[(int)_topFace]);
-		//Debug.Log(" TopFace Offset: " + offset);
+		Debug.Log("Offset: " + offset);
 	}
 	
 	void updateFacePositions () {
@@ -156,6 +155,7 @@ public class CubeController : MonoBehaviour {
 			// offset CubeFace and FaceOptions
 			cubeFace.transform.localRotation = Quaternion.Slerp (cubeFace.transform.localRotation, Quaternion.AngleAxis(_faceRotOffset[i], Vector3.back), Time.deltaTime * 6f);
 			faceOptionsObj.transform.localRotation = Quaternion.Slerp (faceOptionsObj.transform.localRotation, Quaternion.Euler(_faceRotOffset[i],90, 90), Time.deltaTime * 6f);
+
 			//Quaternion.Euler(90,0, _faceRotOffset[i]);
 
 			if (faceController != null) {
@@ -163,10 +163,8 @@ public class CubeController : MonoBehaviour {
 				percent /= 3f;
 
 				int offset = _faceRotOffset[i] - (int)_targetRotation.eulerAngles.y;
-				if (offset < 0) offset += 360;
 
-				Quaternion upRot = Quaternion.An
-				faceController.setAlphaWithRotationOffset(0.5f, (int)_targetRotation.eulerAngles.y);
+				faceController.setAlphaWithRotationOffset(percent, offset);
 			}
 
 			_facePercent [i] = objPerc;

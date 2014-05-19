@@ -27,15 +27,15 @@ public class FaceOptionsController : MonoBehaviour {
 		if (rotOffset == 0) {
 			faceController4.setAlpha (a);
 			faceController1.setAlpha (a);
-		} else if (rotOffset == 90) {
+		} else if (rotOffset == 90 || rotOffset == -270) {
 			faceController3.setAlpha (a);
 			faceController4.setAlpha (a);
-		} else if (rotOffset == 180) {
+		} else if (rotOffset == 180 || rotOffset == -180) {
 			faceController2.setAlpha (a);
 			faceController3.setAlpha (a);
-		} else if (rotOffset == 270) {
-			faceController3.setAlpha (a);
-			faceController4.setAlpha (a);
+		} else if (rotOffset == 270 || rotOffset == -90) {
+			faceController1.setAlpha (a);
+			faceController2.setAlpha (a);
 		}
 
 	}
