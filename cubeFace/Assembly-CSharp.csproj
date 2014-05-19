@@ -46,11 +46,11 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\CubeController.cs" />
-     <Compile Include="Assets\CubeFaceController.cs" />
-     <Compile Include="Assets\FaceOptionsController.cs" />
-     <Compile Include="Assets\GameController.cs" />
-     <Compile Include="Assets\SwipeManager.cs" />
+     <Compile Include="Assets\Scripts\CubeController.cs" />
+     <Compile Include="Assets\Scripts\CubeFaceController.cs" />
+     <Compile Include="Assets\Scripts\FaceOptionsController.cs" />
+     <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\SwipeManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
