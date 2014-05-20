@@ -8,21 +8,46 @@ public enum WallType : int {
 	None, OriginCenter, DestinationCenter,
 	StraightCenter, StraightLeft, StraightRight, StraightMidLeft, StraightMidRight,
 	StraightCrossWide, StraightCrossNarrow,
-	CenterTurnCenter, CenterTurnLeft, CenterTurnRight, CenterTurnMidLeft, CenterTurnMidRight};
+	CenterTurnCenter, CenterTurnLeft, CenterTurnRight, CenterTurnMidLeft, CenterTurnMidRight
+};
+
+public enum WallMode : int { 
+	Invisible, Floor, ToFloor, FullLength, ToFullLength 
+};
 
 public class WallPattern {
+	// IDENTIFICATION
 	WallType wallType;
 	public bool[,] pattern;
 
-	public string ToString () {
+	// ANIMATION
+	private const float FLOOR_PERC = 0.05f;
 
+	private WallMode _wallMode;    // Helps update _cascadePercent
+	private float _cascadePercent; // Gives _colsHeight(array) the staggered animation effect
+	private float[,] _colsHeight;  // The heights of all the columns
+
+	/*
+	public string ToString () {
+		// TODO: construct a nice string describing the Face of the cube
 	}
+	*/
 
 	/*
 	 * Constructor
 	 * */
 	public WallPattern(WallType type) {
 		wallType = type;
+
+		// ANIMATION
+		_wallMode = WallMode.Floor;
+		_cascadePercent = 0;
+		_colsPercent = new float[8,8];
+		for (int i=0; i < 8; ++i) {
+			for (int j=0; j < 8; ++j) {
+				_colsPercent[i,j] = FLOOR_PERC;
+			}
+		}
 
 		// STRAIGHT BRIDGES
 		if (type == WallType.StraightCenter) {
@@ -193,7 +218,7 @@ public class WallPatternManager : MonoBehaviour {
 	void Start () {
 		patterns = new WallPattern[32];
 		for (int i=0; i<patterns.Length; ++i) {
-			patterns[i] = WallPattern(i);
+			patterns[i] = new WallPattern((WallType)i);
 		}
 	}
 	

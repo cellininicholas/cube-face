@@ -31,7 +31,7 @@ public class WallBarsController : MonoBehaviour {
 				_wallBars[i,j] = _wallBarControllers[i].columnParent[j];
 
 				_wallUp [i,j] = true;
-				_wallPercent [i,j] = (float)(i + j) / 64;
+				_wallPercent [i,j] = (float)(i + j) / 32;
 				//_wallPercent [i,j] = (float)((i*8)+j) / 64.0f;
 				if (_wallPercent [i,j] >= 1.0f) {
 					_wallUp [i,j] = false;
@@ -89,14 +89,14 @@ public class WallBarsController : MonoBehaviour {
 					Debug.Log ("SinInput: " + _wallPercent [i,j] + " SinResult: " + sinResult);
 				}
 				*/
-				scale.y = (1 + sinResult) / 2;
-				/*
-				if (scale.y == 0) {
+				scale.y = (sinResult);
+
+				if (scale.y <= 0) {
 					obj.SetActive(false);
 				} else {
 					obj.SetActive(true);
 				}
-				*/
+
 				obj.transform.localScale = scale;
 
 			}
