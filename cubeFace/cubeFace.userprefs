@@ -1,12 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/WallBarsController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/SwipeManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/FaceOptionsController.cs" Line="38" Column="33" />
+      <File FileName="Assets/Scripts/FaceOptionsController.cs" Line="4" Column="26" />
       <File FileName="Assets/Scripts/CubeController.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/CubeFaceController.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/GameController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/WallBarsController.cs" Line="6" Column="20" />
+      <File FileName="Assets/Scripts/WallBarsController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/ColumnRowController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/SwipeManager.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
