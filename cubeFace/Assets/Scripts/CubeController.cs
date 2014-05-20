@@ -118,11 +118,11 @@ public class CubeController : MonoBehaviour {
 			}
 		}
 
-		int offset = _faceRotOffset[(int)_topFace] - (int)_targetRotation.eulerAngles.y;
+		//int offset = _faceRotOffset[(int)_topFace] - (int)_targetRotation.eulerAngles.y;
 
 		//Debug.Log(" Target Rotation: " + (int)_targetRotation.eulerAngles.y);
 		//Debug.Log(" Face Rot Offset: " + (int)_faceRotOffset[(int)_topFace]);
-		Debug.Log("Offset: " + offset);
+		//Debug.Log("Offset: " + offset);
 	}
 	
 	void updateFacePositions () {
