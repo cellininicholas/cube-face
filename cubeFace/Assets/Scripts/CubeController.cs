@@ -6,6 +6,7 @@ public class CubeController : MonoBehaviour {
 
 	enum Face : byte {Face1=0, Face2=1, Face3=2, Face4=3, Face5=4, Face6=5, FaceNone=6};
 
+	public WallBarsController[] wallControllers;
 	public GameObject[] faceSpaces;
 	public GameObject[] faces;
 	private float[] _facePercent;
@@ -139,14 +140,25 @@ public class CubeController : MonoBehaviour {
 
 			if (i == (int)_topFace) {
 				objPerc += Time.deltaTime * 0.8f;
-				if (objPerc > 1.0f) objPerc = 1;
+				if (objPerc >= 1.0f) {
+					objPerc = 1;
+				}
+				if (objPerc >= 0.6f) {
+					wallControllers[i].animateWallToTall(true);
+				}
+
 				cubeFace.transform.localPosition = Vector3.Slerp (cubeFace.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
 				faceOptionsObj.transform.localPosition = Vector3.Slerp (faceOptionsObj.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
 
 
 			} else {
 				objPerc -= Time.deltaTime * 0.8f;
-				if (objPerc < 0) objPerc = 0;
+				if (objPerc <= 0) {
+					objPerc = 0;
+				}
+				if (objPerc <= 0.5f) {
+					wallControllers[i].animateWallToShort (true);
+				}
 				cubeFace.transform.localPosition = Vector3.Slerp (cubeFace.transform.localPosition, new Vector3(0f,0f,0f), 1.0f-objPerc);
 				faceOptionsObj.transform.localPosition = Vector3.Slerp (faceOptionsObj.transform.localPosition, new Vector3(0f,0f,6f), 1.0f-objPerc);
 

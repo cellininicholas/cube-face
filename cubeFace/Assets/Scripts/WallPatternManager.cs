@@ -11,21 +11,10 @@ public enum WallType : int {
 	CenterTurnCenter, CenterTurnLeft, CenterTurnRight, CenterTurnMidLeft, CenterTurnMidRight
 };
 
-public enum WallMode : int { 
-	Invisible, Floor, ToFloor, FullLength, ToFullLength 
-};
-
 public class WallPattern {
 	// IDENTIFICATION
-	WallType wallType;
+	public WallType wallType;
 	public bool[,] pattern;
-
-	// ANIMATION
-	private const float FLOOR_PERC = 0.05f;
-
-	private WallMode _wallMode;    // Helps update _cascadePercent
-	private float _cascadePercent; // Gives _colsHeight(array) the staggered animation effect
-	private float[,] _colsHeight;  // The heights of all the columns
 
 	/*
 	public string ToString () {
@@ -38,16 +27,6 @@ public class WallPattern {
 	 * */
 	public WallPattern(WallType type) {
 		wallType = type;
-
-		// ANIMATION
-		_wallMode = WallMode.Floor;
-		_cascadePercent = 0;
-		_colsPercent = new float[8,8];
-		for (int i=0; i < 8; ++i) {
-			for (int j=0; j < 8; ++j) {
-				_colsPercent[i,j] = FLOOR_PERC;
-			}
-		}
 
 		// STRAIGHT BRIDGES
 		if (type == WallType.StraightCenter) {
