@@ -13,6 +13,8 @@ public class WallBarsController : MonoBehaviour {
 	// PRIVATE
 	private ColumnRowController[] _wallBarControllers;
 	private GameObject[,] _wallBars;
+	private Material[,] _barMaterials;
+	private Color _glowColor;
 
 	public WallType initWallType;
 	private WallPattern _wallPattern;
@@ -31,6 +33,8 @@ public class WallBarsController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		_wallBars = new GameObject[wallRows.Length , wallRows.Length];
+		_glowColor = new Color (1.0f, 0.8f, 0, 1.0f);
+		_barMaterials = new Material[wallRows.Length , wallRows.Length];
 		_wallBarControllers = new ColumnRowController[wallRows.Length];
 
 		// Get the Controllers
@@ -39,6 +43,9 @@ public class WallBarsController : MonoBehaviour {
 
 			for (int j=0; j < _wallBarControllers.Length; ++j) {
 				_wallBars[i,j] = _wallBarControllers[i].columnParent[j];
+				MeshRenderer meshRenderer = _wallBars[i,j].GetComponentInChildren<MeshRenderer>();
+				_barMaterials[i,j] = meshRenderer.material;
+				//_barMaterials[i,j].
 			}
 		}
 
@@ -109,7 +116,7 @@ public class WallBarsController : MonoBehaviour {
 
 	void reduceGlowAtIndex (int i, int j) {
 		// Glow doesn't last forever :(
-		_colsGlowPercent[i,j] = (_colsGlowPercent[i,j] * 0.9f);
+		_colsGlowPercent[i,j] = (_colsGlowPercent[i,j] * 0.8f);
 		if (_colsGlowPercent[i,j] <= 0.001f) _colsGlowPercent[i,j] = 0;
 	}
 
@@ -159,7 +166,7 @@ public class WallBarsController : MonoBehaviour {
 			for (int j=0; j < wallRows.Length; ++j) {
 				if (_colsGlowPercent[i,j] > 0) {
 					if (_preUpdateColsGlowPassed [i, j] == false && 
-					    _colsGlowPercent[i,j] < 0.2f) {
+					    _colsGlowPercent[i,j] < 0.4f) {
 						// Move the flood to adjacent Blocks
 						floodAdjacentBlocksAndReduceGlow (i, j);
 					} else {
@@ -215,18 +222,18 @@ public class WallBarsController : MonoBehaviour {
 
 			_colsGlowPassed[2,2] = false;
 			_colsGlowPercent[2,2] = 1.111f;
-			_pulseTimeOut = 2;
+			_pulseTimeOut = 0.5f;
 		}
 		_pulseTimeOut -= Time.deltaTime;
 
 		// TESTING GLOW PERCENTAGES
 		for (int i=0; i < wallRows.Length; ++i) {
 			for (int j=0; j < wallRows.Length; ++j) {
-				GameObject obj = _wallBars[i,j];
-				
-				Vector3 scale = obj.transform.localScale;
-				scale.y = FLOOR_PERC + (0.4f + _colsGlowPercent[i,j]);
-				obj.transform.localScale = scale;
+				Material mat = _barMaterials[i,j];
+
+				float p = _colsGlowPercent[i,j];
+				float iP = 1.0f - p;
+				mat.color = new Color ((_glowColor.r * p) + iP, (_glowColor.g * p) + iP, iP, 1.0f);
 			}
 		}
 	}
