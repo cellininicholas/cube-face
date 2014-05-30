@@ -4,6 +4,11 @@ using System.Collections;
 public class CubeController : MonoBehaviour {
 	public bool updateActive;
 
+	// FLOATY-NESS
+	private float _floatyPercent;
+	public float floatBobSpeed;
+	public float floatHeightPercent;
+
 	enum Face : byte {Face1=0, Face2=1, Face3=2, Face4=3, Face5=4, Face6=5, FaceNone=6};
 
 	public WallBarsController[] wallControllers;
@@ -20,6 +25,7 @@ public class CubeController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		_floatyPercent = 0;
 		_topFace = Face.Face1;
 		_targetRotation = transform.rotation;
 
@@ -143,9 +149,12 @@ public class CubeController : MonoBehaviour {
 				if (objPerc >= 1.0f) {
 					objPerc = 1;
 				}
+
+				/*
 				if (objPerc >= 0.6f) {
 					wallControllers[i].animateWallToTall(true);
 				}
+				*/
 
 				cubeFace.transform.localPosition = Vector3.Slerp (cubeFace.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
 				faceOptionsObj.transform.localPosition = Vector3.Slerp (faceOptionsObj.transform.localPosition, new Vector3(0f,0f,2.85f), objPerc);
@@ -156,9 +165,11 @@ public class CubeController : MonoBehaviour {
 				if (objPerc <= 0) {
 					objPerc = 0;
 				}
+				/*
 				if (objPerc <= 0.5f) {
 					wallControllers[i].animateWallToShort (true);
 				}
+				*/
 				cubeFace.transform.localPosition = Vector3.Slerp (cubeFace.transform.localPosition, new Vector3(0f,0f,0f), 1.0f-objPerc);
 				faceOptionsObj.transform.localPosition = Vector3.Slerp (faceOptionsObj.transform.localPosition, new Vector3(0f,0f,6f), 1.0f-objPerc);
 
@@ -179,8 +190,17 @@ public class CubeController : MonoBehaviour {
 				faceController.setAlphaWithRotationOffset(percent, offset);
 			}
 
+			//wallControllers[i].setCascadePercent(cubeFace.transform.localPosition.z / 2.85f);
+
 			_facePercent [i] = objPerc;
 		}
+	}
+
+	void updateWithFloatiness () {
+		_floatyPercent += floatBobSpeed * Time.deltaTime;
+		if (_floatyPercent > 2 * Mathf.PI) _floatyPercent -= 2 * Mathf.PI;
+		float yPos = 1.0f + (floatHeightPercent * Mathf.Cos(_floatyPercent));
+		transform.localPosition = new Vector3 (transform.localPosition.x, yPos, transform.localPosition.z);
 	}
 
 	// Update is called once per frame
@@ -188,6 +208,7 @@ public class CubeController : MonoBehaviour {
 		if (updateActive) {
 			transform.rotation = Quaternion.Slerp (transform.rotation, _targetRotation, Time.deltaTime * 6f);
 			updateFacePositions ();
+			updateWithFloatiness ();
 		}
 	}
 

@@ -14,21 +14,24 @@ public class WallBarsController : MonoBehaviour {
 	private ColumnRowController[] _wallBarControllers;
 	private GameObject[,] _wallBars;
 
+	public WallType initWallType;
 	private WallPattern _wallPattern;
 
 	// ANIMATION
 	private const float FLOOR_PERC = 0.18f;
 	private const float MAX_COL_HEIGHT = 2.0f;
 
-	private WallMode _wallMode;    // Helps update _cascadePercent
-	private bool _shouldCascade;
-	private float _cascadePercent; // Gives _colsHeight(array) the staggered animation effect
-	private float[,] _colsPercent;  // The heights of all the columns
+	private WallMode _wallMode; // Helps update _cascadePercent
+
+	private float _pulseTimeOut;
+	private float[,] _colsGlowPercent;  // The glow of all the columns
+	private bool[,] _preUpdateColsGlowPassed;
+	private bool[,] _colsGlowPassed;
 
 	// Use this for initialization
 	void Start () {
-		_wallBars = new GameObject[8,8];
-		_wallBarControllers = new ColumnRowController[8];
+		_wallBars = new GameObject[wallRows.Length , wallRows.Length];
+		_wallBarControllers = new ColumnRowController[wallRows.Length];
 
 		// Get the Controllers
 		for (int i=0; i < wallRows.Length; ++i) {
@@ -41,62 +44,54 @@ public class WallBarsController : MonoBehaviour {
 
 		//setWallBarsToInterestingHeights ();
 
-		_wallPattern = new WallPattern (WallType.StraightCrossWide);
+		_wallPattern = new WallPattern (initWallType);
 		
-		// SETUP INITIAL WALL HEIGHTS
-		_colsPercent = new float[8,8];
-		for (int i=0; i < 8; ++i) {
-			for (int j=0; j < 8; ++j) {
+		// SETUP INITIAL WALL GLOW
+		_pulseTimeOut = 0;
+		_colsGlowPercent = new float[wallRows.Length , wallRows.Length];
+		_colsGlowPassed = new bool[wallRows.Length , wallRows.Length];
+		_preUpdateColsGlowPassed = new bool[wallRows.Length , wallRows.Length];
+		for (int i=0; i < wallRows.Length; ++i) {
+			for (int j=0; j < wallRows.Length; ++j) {
+				_colsGlowPassed[i,j] = true;
+				_preUpdateColsGlowPassed[i,j] = true;
+
 				if (_wallPattern.pattern[i,j]) {
-					_colsPercent[i,j] = FLOOR_PERC;
+					_colsGlowPercent[i,j] = 0;
 				} else {
-					_colsPercent[i,j] = 0;
+					_colsGlowPercent[i,j] = 0;
 				}
 			}
 		}
-		
-		updateColumHeightsUsingPercentages ();
-		
+
+		setCascadePercent (0.0f);
+
 		// ANIMATION
 		_wallMode = WallMode.Floor;
-		_cascadePercent = 0;
+		//_colsGlowPercent = 0;
 	}
 
-	public void animateWallToTall (bool cascade) {
-		_shouldCascade = cascade;
-		if (_wallMode != WallMode.FullLength && _wallMode != WallMode.ToFullLength) {
-			_wallMode = WallMode.ToFullLength;
-			_cascadePercent = 0;
-		}
-	}
+	public void setCascadePercent(float percent) {
+		//Debug.Log ("Percent: " + percent);
 
-	public void animateWallToShort (bool cascade) {
-		_shouldCascade = cascade;
-		if (_wallMode != WallMode.Floor && _wallMode != WallMode.ToFloor) {
-			_wallMode = WallMode.ToFloor;
-			_cascadePercent = 0;
-		}
-	}
+		//percent = (FLOOR_PERC + percent) / (1 + FLOOR_PERC);
+		percent *= (1 - FLOOR_PERC);
+		percent += FLOOR_PERC;
 
-	public void animateWallToZero (bool cascade) {
-		_shouldCascade = cascade;
-		if (_wallMode != WallMode.Invisible && _wallMode != WallMode.ToInvisible) {
-			_wallMode = WallMode.ToInvisible;
-			_cascadePercent = 0;
-		}
-	}
-
-	void updateColumHeightsUsingPercentages () {
-		for (int i=0; i < 8; ++i) {
-			for (int j=0; j < 8; ++j) {
+		for (int i=0; i < wallRows.Length; ++i) {
+			for (int j=0; j < wallRows.Length; ++j) {
 				GameObject obj = _wallBars[i,j];
 
-				if (_colsPercent[i,j] >= FLOOR_PERC) {
-					Vector3 scale = obj.transform.localScale;
-					scale.y = _colsPercent[i,j] * MAX_COL_HEIGHT;
-					obj.transform.localScale = scale;
-
-					obj.SetActive(true);
+				if (_wallPattern.pattern[i,j]) {
+					if (percent >= FLOOR_PERC) {
+						Vector3 scale = obj.transform.localScale;
+						scale.y = percent * MAX_COL_HEIGHT;
+						obj.transform.localScale = scale;
+						
+						obj.SetActive(true);
+					} else {
+						obj.SetActive(false);
+					}
 				} else {
 					obj.SetActive(false);
 				}
@@ -104,34 +99,94 @@ public class WallBarsController : MonoBehaviour {
 		}
 	}
 
-	void updateCascadePercentage () {
-		if (_wallMode >= WallMode.ToFullLength) {
-			_cascadePercent += Time.deltaTime;
-			if (_cascadePercent >= 1.0f) _cascadePercent = 1.0f;
-		}
+	/*
+	 *  GLOW
+	 * */
+
+	bool indicesAreWithArrayRange (int i, int j) {
+		return (i >= 0 && i < wallRows.Length && j >= 0 && j < wallRows.Length);
 	}
 
-	void updateColumnPercentages () {
-		for (int i=0; i < 8; ++i) {
-			for (int j=0; j < 8; ++j) {
-				if (_wallPattern.pattern[i,j]) {
-					float percentForEachColumn = (float)((i * 8) + j) / 64.0f;
-					if (percentForEachColumn < _cascadePercent) {
-						// we can change the height of this column
-						if (_wallMode == WallMode.ToFullLength) {
-							_colsPercent[i,j] += Time.deltaTime * 6;
-							if (_colsPercent[i,j] >= 1.0f) _colsPercent[i,j] = 1.0f;
-						} else if (_wallMode == WallMode.ToFloor) {
-							_colsPercent[i,j] -= Time.deltaTime * 6;
-							if (_colsPercent[i,j] <= FLOOR_PERC) _colsPercent[i,j] = FLOOR_PERC;
-						} else if (_wallMode == WallMode.ToInvisible) {
-							_colsPercent[i,j] -= Time.deltaTime * 6;
-							if (_colsPercent[i,j] <= 0) _colsPercent[i,j] = 0;
-						}
+	void reduceGlowAtIndex (int i, int j) {
+		// Glow doesn't last forever :(
+		_colsGlowPercent[i,j] = (_colsGlowPercent[i,j] * 0.9f);
+		if (_colsGlowPercent[i,j] <= 0.001f) _colsGlowPercent[i,j] = 0;
+	}
+
+	void floodAdjacentBlocksAndReduceGlow (int i, int j) {
+		if (_colsGlowPassed [i, j] == false) {
+			int tmpI = i - 1;
+			int tmpJ = j;
+			if (indicesAreWithArrayRange(tmpI, tmpJ) &&
+			    _colsGlowPassed [tmpI, tmpJ]) {
+				_colsGlowPercent[tmpI, tmpJ] = 1.111f;
+				_colsGlowPassed [tmpI, tmpJ] = false;
+			}
+
+			tmpI = i + 1;
+			tmpJ = j;
+			if (indicesAreWithArrayRange(tmpI, tmpJ) &&
+			    _colsGlowPassed [tmpI, tmpJ]) {
+				_colsGlowPercent[tmpI, tmpJ] = 1.111f;
+				_colsGlowPassed [tmpI, tmpJ] = false;
+			}
+
+			tmpI = i;
+			tmpJ = j - 1;
+			if (indicesAreWithArrayRange(tmpI, tmpJ) &&
+			    _colsGlowPassed [tmpI, tmpJ]) {
+				_colsGlowPercent[tmpI, tmpJ] = 1.111f;
+				_colsGlowPassed [tmpI, tmpJ] = false;
+			}
+
+			tmpI = i;
+			tmpJ = j + 1;
+			if (indicesAreWithArrayRange(tmpI, tmpJ) &&
+			    _colsGlowPassed [tmpI, tmpJ]) {
+				_colsGlowPercent[tmpI, tmpJ] = 1.111f;
+				_colsGlowPassed [tmpI, tmpJ] = false;
+			}
+
+			//_colsGlowPassed [i, j] = true;
+		}
+		reduceGlowAtIndex (i, j);
+	}
+
+	void updateGlowFlood () {
+
+		// Boots. Cats... a' Boots, Cats!
+		for (int i=0; i < wallRows.Length; ++i) {
+			for (int j=0; j < wallRows.Length; ++j) {
+				if (_colsGlowPercent[i,j] > 0) {
+					if (_preUpdateColsGlowPassed [i, j] == false && 
+					    _colsGlowPercent[i,j] < 0.2f) {
+						// Move the flood to adjacent Blocks
+						floodAdjacentBlocksAndReduceGlow (i, j);
+					} else {
+						reduceGlowAtIndex (i, j);
 					}
 				}
 			}
 		}
+	}
+
+	void copyTmpGlowFlowArray () {
+		for (int i=0; i < wallRows.Length; ++i) {
+			for (int j=0; j < wallRows.Length; ++j) {
+				_preUpdateColsGlowPassed[i,j] = _colsGlowPassed[i,j];
+			}
+		}
+	}
+
+	bool allColGlowHasZeroed () {
+		if (_colsGlowPercent != null) {
+			for (int i=0; i < wallRows.Length; ++i) {
+				for (int j=0; j < wallRows.Length; ++j) {
+					if (_colsGlowPercent[i,j] != 0) return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/*
@@ -140,22 +195,49 @@ public class WallBarsController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//updateUsingSinWavePercentages ();
+		copyTmpGlowFlowArray ();
+		updateGlowFlood ();
 
-		if (_shouldCascade && _wallMode >= WallMode.ToFullLength) {
-			updateCascadePercentage ();
-			updateColumnPercentages ();
+		if (_wallPattern.wallType == WallType.OriginCenter &&
+		    _colsGlowPercent[2,2] == 0.0f &&
+		    _pulseTimeOut <= 0.0f &&
+		    allColGlowHasZeroed() ) {
+
+			// START THE FLOOD!!!
+			Debug.Log ("Start the FLOOD!");
+
+			// Change the ripple flag
+			for (int i=0; i < wallRows.Length; ++i) {
+				for (int j=0; j < wallRows.Length; ++j) {
+					_colsGlowPassed[i,j] = true;
+				}
+			}
+
+			_colsGlowPassed[2,2] = false;
+			_colsGlowPercent[2,2] = 1.111f;
+			_pulseTimeOut = 2;
 		}
-		updateColumHeightsUsingPercentages ();
+		_pulseTimeOut -= Time.deltaTime;
+
+		// TESTING GLOW PERCENTAGES
+		for (int i=0; i < wallRows.Length; ++i) {
+			for (int j=0; j < wallRows.Length; ++j) {
+				GameObject obj = _wallBars[i,j];
+				
+				Vector3 scale = obj.transform.localScale;
+				scale.y = FLOOR_PERC + (0.4f + _colsGlowPercent[i,j]);
+				obj.transform.localScale = scale;
+			}
+		}
 	}
 
 	void setWallBarsToInterestingHeights () {
-		for (int i=0; i < 8; ++i) {
-			for (int j=0; j < 8; ++j) {
+		for (int i=0; i < wallRows.Length; ++i) {
+			for (int j=0; j < wallRows.Length; ++j) {
 				GameObject obj = _wallBars[i,j];
 
 				Vector3 scale = obj.transform.localScale;
-				scale.y = ((float)i/8)+((float)j/8);
+				scale.y = ((float)i/wallRows.Length)+((float)j/wallRows.Length);
 				if (scale.y == 0) {
 					obj.SetActive(false);
 				} else {
@@ -166,45 +248,5 @@ public class WallBarsController : MonoBehaviour {
 		}
 	}
 
-	/*
-	// SIN WAVES
-	void updateUsingSinWavePercentages () {
-		for (int i=0; i < wallRows.Length; ++i) {
-			for (int j=0; j < _wallBarControllers.Length; ++j) {
-				GameObject obj = _wallBars[i,j];
-
-				if (_wallUp [i,j]) {
-					_wallPercent [i,j] += Time.deltaTime / 2;
-					if (_wallPercent [i,j] >= 1.0f) {
-						_wallPercent [i,j] = 1.0f;
-						_wallUp [i,j] = false;
-					}
-				} else {
-					_wallPercent [i,j] -= Time.deltaTime / 2;
-					if (_wallPercent [i,j] <= 0) {
-						_wallPercent [i,j] = 0.01f;
-						_wallUp [i,j] = true;
-					}
-				}
-
-				// UPDATE HEIGHT
-				Vector3 scale = obj.transform.localScale;
-				float sinResult = Mathf.Cos(_wallPercent [i,j] * Mathf.PI * 2);
-				if (sinResult > 1.0f || sinResult < -1.0f) sinResult = 0;
-
-				scale.y = (sinResult);
-
-				if (scale.y <= 0) {
-					obj.SetActive(false);
-				} else {
-					obj.SetActive(true);
-				}
-
-				obj.transform.localScale = scale;
-
-			}
-		}
-	}
-	*/
 
 }

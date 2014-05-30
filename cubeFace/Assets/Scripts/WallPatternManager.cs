@@ -6,9 +6,9 @@ using System.Collections;
 
 public enum WallType : int { 
 	None, OriginCenter, DestinationCenter,
-	StraightCenter, StraightLeft, StraightRight, StraightMidLeft, StraightMidRight,
+	StraightCenter, StraightLeft, StraightRight,
 	StraightCrossWide, StraightCrossNarrow,
-	CenterTurnCenter, CenterTurnLeft, CenterTurnRight, CenterTurnMidLeft, CenterTurnMidRight
+	CenterTurnCenter, CenterTurnLeft, CenterTurnRight
 };
 
 public class WallPattern {
@@ -30,158 +30,89 @@ public class WallPattern {
 
 		// STRAIGHT BRIDGES
 		if (type == WallType.StraightCenter) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{true,true,true,true,true,true,true,true},
-				{true,true,true,true,true,true,true,true},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{false,false,false,false,false},
+				{ true, true, true, true, true},
+				{false,false,false,false,false},
+				{false,false,false,false,false}};
 		} else if (type == WallType.StraightRight) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{true,true,true,true,true,true,true,true},
-				{true,true,true,true,true,true,true,true},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{false,false,false,false,false},
+				{false,false,false,false,false},
+				{ true, true, true, true, true},
+				{false,false,false,false,false}};
 		} else if (type == WallType.StraightLeft) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{true,true,true,true,true,true,true,true},
-				{true,true,true,true,true,true,true,true},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
-		} else if (type == WallType.StraightMidRight) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{true,true,true,true,true,true,true,true},
-				{true,true,true,true,true,true,true,true},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
-		} else if (type == WallType.StraightMidLeft) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{true,true,true,true,true,true,true,true},
-				{true,true,true,true,true,true,true,true},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{ true, true, true, true, true},
+				{false,false,false,false,false},
+				{false,false,false,false,false},
+				{false,false,false,false,false}};
 
 			// STRAIGHT CROSS
 		} else if (type == WallType.StraightCrossWide) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,true,true,false},
-				{false,false,false,false,false,true,true,false},
-				{false,false,false,false,false,true,true,false},
-				{false, true, true, true, true,true,true,false},
-				{false, true, true, true, true,true,true,false},
-				{false, true, true,false,false,false,false,false},
-				{false, true, true,false,false,false,false,false},
-				{false, true, true,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{false,false, true, true, true},
+				{false,false, true,false,false},
+				{ true, true, true,false,false},
+				{false,false,false,false,false}};
 		} else if (type == WallType.StraightCrossNarrow) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false, true,true,false,false},
-				{false,false,false,false, true,true,false,false},
-				{false,false,false,false, true,true,false,false},
-				{false,false, true, true, true,true,false,false},
-				{false,false, true, true, true,true,false,false},
-				{false,false, true, true,false,false,false,false},
-				{false,false, true, true,false,false,false,false},
-				{false,false, true, true,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{ true, true, true,false,false},
+				{false,false, true,false,false},
+				{false,false, true, true, true},
+				{false,false,false,false,false}};
 
 			// CENTER TURN
 		} else if (type == WallType.CenterTurnCenter) {
-			pattern = new bool[8, 8] {
-				{false,false,false, true, true,false,false,false},
-				{false,false,false, true, true,false,false,false},
-				{false,false,false, true, true,false,false,false},
-				{ true, true, true, true, true,false,false,false},
-				{ true, true, true, true, true,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false, true,false,false},
+				{false,false, true,false,false},
+				{ true, true, true,false,false},
+				{false,false,false,false,false},
+				{false,false,false,false,false}};
 		} else if (type == WallType.CenterTurnLeft) {
-			pattern = new bool[8, 8] {
-				{false, true, true,false,false,false,false,false},
-				{false, true, true,false,false,false,false,false},
-				{false, true, true,false,false,false,false,false},
-				{ true, true, true,false,false,false,false,false},
-				{ true, true, true,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
-		} else if (type == WallType. CenterTurnMidLeft) {
-			pattern = new bool[8, 8] {
-				{false,false, true, true,false,false,false,false},
-				{false,false, true, true,false,false,false,false},
-				{false,false, true, true,false,false,false,false},
-				{ true, true, true, true,false,false,false,false},
-				{ true, true, true, true,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false, true,false,false,false},
+				{false, true,false,false,false},
+				{ true, true,false,false,false},
+				{false,false,false,false,false},
+				{false,false,false,false,false}};
+
 		} else if (type == WallType.CenterTurnRight) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false, true, true,false},
-				{false,false,false,false,false, true, true,false},
-				{false,false,false,false,false, true, true,false},
-				{ true, true, true, true, true, true, true,false},
-				{ true, true, true, true, true, true, true,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
-		} else if (type == WallType.CenterTurnMidRight) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false, true, true,false,false},
-				{false,false,false,false, true, true,false,false},
-				{false,false,false,false, true, true,false,false},
-				{ true, true, true, true, true, true,false,false},
-				{ true, true, true, true, true, true,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false, true,false},
+				{false,false,false, true,false},
+				{ true, true, true, true,false},
+				{false,false,false,false,false},
+				{false,false,false,false,false}};
 
 			// ORIGIN
 		} else if (type == WallType.OriginCenter) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false, true, true, true, true,false,false},
-				{false,false, true, true, true, true, true, true},
-				{false,false, true, true, true, true, true, true},
-				{false,false, true, true, true, true,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{false, true, true, true,false},
+				{false, true, true, true, true},
+				{false, true, true, true,false},
+				{false,false,false,false,false}};
 
 			// DESTINATION
 		} else if (type == WallType.DestinationCenter) {
-			pattern = new bool[8, 8] {
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false, true, true, true, true,false,false},
-				{ true, true, true, true, true, true,false,false},
-				{ true, true, true, true, true, true,false,false},
-				{false,false, true, true, true, true,false,false},
-				{false,false,false,false,false,false,false,false},
-				{false,false,false,false,false,false,false,false}};
+			pattern = new bool[5, 5] {
+				{false,false,false,false,false},
+				{false, true, true, true,false},
+				{ true, true, true, true,false},
+				{false, true, true, true,false},
+				{false,false,false,false,false}};
 		} else {
 			// Initialise
-			pattern = new bool[8, 8];
-			for (int i=0; i < 8; ++i) {
-				for (int j=0; j < 8; ++j) {
+			pattern = new bool[5, 5];
+			for (int i=0; i < 5; ++i) {
+				for (int j=0; j < 5; ++j) {
 					pattern[i,j] = false;
 				}
 			}
